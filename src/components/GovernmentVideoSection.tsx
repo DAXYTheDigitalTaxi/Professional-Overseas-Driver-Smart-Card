@@ -2,48 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize, Film } from 'lucide-react';
 import '../styles/video.css';
 
-interface VideoItem {
-  id: string;
-  titleMarathi: string;
-  titleEnglish: string;
-  source: string;
-  isVertical: boolean;
-  speaker: string;
-  designation: string;
-}
-
-const VIDEO_PLAYLIST: VideoItem[] = [
-  {
-    id: 'pratap-sarnaik',
-    titleMarathi: 'प्रताप सरनाईक यांचा अधिकृत संदेश',
-    titleEnglish: 'Official Address by Pratap Sarnaik',
-    source: './assets/pratap-sarnaik.mp4',
-    isVertical: false,
-    speaker: 'मा. आ. श्री. प्रताप सरनाईक',
-    designation: 'महाराष्ट्र शासन उपक्रम • प्रवासी वाहन चालक कल्याण मंडळ',
-  },
-  {
-    id: 'reel-1',
-    titleMarathi: 'डिजिटल क्यूआर ओळखपत्र - विशेष रील १',
-    titleEnglish: 'QR Identity Card - Special Reel 1',
-    source: './assets/reel-1.mp4',
-    isVertical: true,
-    speaker: 'जनजागृती रील १',
-    designation: 'प्रवासी व चालक जनजागृती मोहीम',
-  },
-  {
-    id: 'reel-2',
-    titleMarathi: 'सुरक्षित प्रवास, समृद्ध महाराष्ट्र - विशेष रील २',
-    titleEnglish: 'Safe Travel Initiative - Special Reel 2',
-    source: './assets/reel-2.mp4',
-    isVertical: true,
-    speaker: 'जनजागृती रील २',
-    designation: 'कल्याणकारी योजना माहिती मोहीम',
-  },
-];
-
 export const GovernmentVideoSection: React.FC = () => {
-  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isInViewport, setIsInViewport] = useState(false);
@@ -51,8 +10,6 @@ export const GovernmentVideoSection: React.FC = () => {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const currentVideo = VIDEO_PLAYLIST[activeVideoIndex];
 
   // IntersectionObserver implementation for viewport-based autoplay/pause
   useEffect(() => {
@@ -62,7 +19,7 @@ export const GovernmentVideoSection: React.FC = () => {
         setIsInViewport(entry.isIntersecting);
       },
       {
-        threshold: 0.45, // Trigger when 45% of video card is visible
+        threshold: 0.35, // Trigger when 35% of video card is visible
       }
     );
 
@@ -81,7 +38,6 @@ export const GovernmentVideoSection: React.FC = () => {
     if (!video) return;
 
     if (isInViewport) {
-      // Browsers allow autoplay ONLY when muted
       video.muted = isMuted;
       const playPromise = video.play();
       if (playPromise !== undefined) {
@@ -91,7 +47,6 @@ export const GovernmentVideoSection: React.FC = () => {
             setAutoplayBlocked(false);
           })
           .catch(() => {
-            // Autoplay blocked by browser policy
             setAutoplayBlocked(true);
             setIsPlaying(false);
           });
@@ -100,7 +55,7 @@ export const GovernmentVideoSection: React.FC = () => {
       video.pause();
       setIsPlaying(false);
     }
-  }, [isInViewport, activeVideoIndex, isMuted]);
+  }, [isInViewport, isMuted]);
 
   const togglePlayPause = () => {
     const video = videoRef.current;
@@ -156,49 +111,23 @@ export const GovernmentVideoSection: React.FC = () => {
             महाराष्ट्राच्या सुरक्षित प्रवासासाठी एक नवा डिजिटल उपक्रम
           </h2>
           <div className="video-title-english">
-            Message from the Maharashtra Government • Passenger Vehicle Welfare Initiative
+            Message from the Maharashtra Government • प्रताप सरनाईक
           </div>
         </div>
 
-        {/* Video Selector Tabs: Pratap Sarnaik + 2 Instagram Reels */}
-        <div className="video-selector-tabs" role="tablist">
-          {VIDEO_PLAYLIST.map((item, index) => (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              aria-selected={activeVideoIndex === index}
-              className={`video-tab-btn ${activeVideoIndex === index ? 'active' : ''}`}
-              onClick={() => {
-                setActiveVideoIndex(index);
-                // When changing video, keep muted for autoplay compliance
-                setIsMuted(true);
-              }}
-            >
-              <span>{item.isVertical ? '📱' : '📺'}</span>
-              <span>{item.titleMarathi.split(' - ')[0]}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Video Frame */}
-        <div
-          className={`video-frame-wrapper ${
-            currentVideo.isVertical ? 'aspect-vertical' : 'aspect-standard'
-          }`}
-        >
+        {/* Single Video Frame (No tabs) */}
+        <div className="video-frame-wrapper aspect-standard">
           <video
             ref={videoRef}
-            key={currentVideo.source}
             className="gov-video-element"
             playsInline
             muted={isMuted}
             loop
-            preload="metadata"
+            preload="auto"
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
           >
-            <source src={currentVideo.source} type="video/mp4" />
+            <source src="./assets/pratap-sarnaik.mp4" type="video/mp4" />
             आपला ब्राऊझर व्हिडिओ टॅगला समर्थन देत नाही. (Browser does not support HTML5 video)
           </video>
 
@@ -263,12 +192,12 @@ export const GovernmentVideoSection: React.FC = () => {
         {/* Video Speaker Footer Information */}
         <div className="video-card-footer">
           <div className="video-speaker-info">
-            <div className="speaker-avatar-circle">
-              {currentVideo.isVertical ? 'REEL' : 'GOV'}
-            </div>
+            <div className="speaker-avatar-circle">GOV</div>
             <div className="speaker-name-title">
-              <span className="speaker-name">{currentVideo.speaker}</span>
-              <span className="speaker-post">{currentVideo.designation}</span>
+              <span className="speaker-name">मा. आ. श्री. प्रताप सरनाईक</span>
+              <span className="speaker-post">
+                महाराष्ट्र शासन उपक्रम • धर्मवीर आनंद दिघे साहेब महाराष्ट्र प्रवासी वाहन चालक कल्याण मंडळ
+              </span>
             </div>
           </div>
 
@@ -279,7 +208,7 @@ export const GovernmentVideoSection: React.FC = () => {
               textAlign: 'right',
             }}
           >
-            स्वयं-प्ले (Auto-play when visible)
+            स्वयं-प्ले (Auto-play on scroll)
           </div>
         </div>
       </div>
