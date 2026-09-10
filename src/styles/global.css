@@ -1,0 +1,305 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&display=swap');
+@import './design-tokens.css';
+
+/* CSS Reset & Defaults */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-marathi);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Typography Helpers */
+.font-english {
+  font-family: var(--font-english);
+}
+
+.font-marathi {
+  font-family: var(--font-marathi);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.5px;
+}
+
+/* Bilingual Text Container */
+.bilingual-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.bilingual-header .primary-marathi {
+  font-family: var(--font-marathi);
+  font-weight: 700;
+  color: var(--gov-navy-900);
+  line-height: 1.25;
+}
+
+.bilingual-header .secondary-english {
+  font-family: var(--font-english);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+/* Page Container */
+.page-container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    padding: 0 1.5rem;
+  }
+}
+
+/* Government Section Card */
+.gov-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.gov-card-header {
+  padding: 1rem 1.25rem;
+  background: var(--bg-surface-warm);
+  border-bottom: 1px solid var(--border-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.gov-card-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.gov-card-body {
+  padding: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .gov-card-body {
+    padding: 1.5rem;
+  }
+}
+
+/* Saffron State Stripe Accent */
+.state-stripe-accent {
+  height: 4px;
+  background: linear-gradient(90deg, #d9531e 0%, #d9531e 35%, #ffffff 35%, #ffffff 65%, #15803d 65%, #15803d 100%);
+  width: 100%;
+}
+
+/* Verified Pill / Badge */
+.verified-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background-color: var(--gov-green-100);
+  color: var(--gov-green-700);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: var(--font-english);
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(22, 163, 74, 0.25);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.verified-pill-dot {
+  width: 7px;
+  height: 7px;
+  background-color: var(--gov-green-600);
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.7;
+  }
+}
+
+/* Commercial Yellow Plate Badge */
+.yellow-plate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: var(--plate-yellow);
+  color: var(--plate-black);
+  font-family: var(--font-english);
+  font-weight: 800;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid #ca8a04;
+  letter-spacing: 0.5px;
+}
+
+/* Key-Value Data Rows */
+.data-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.625rem 0;
+  border-bottom: 1px dashed var(--border-hairline);
+  font-size: 0.9375rem;
+}
+
+.data-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.data-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  max-width: 45%;
+}
+
+.data-label-marathi {
+  font-family: var(--font-marathi);
+  font-weight: 600;
+  color: var(--gov-navy-900);
+  line-height: 1.25;
+}
+
+.data-label-english {
+  font-family: var(--font-english);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.data-value {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-align: right;
+  max-width: 55%;
+  word-break: break-word;
+}
+
+.data-value-mono {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--gov-navy-950);
+  background: var(--gov-navy-50);
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-hairline);
+  display: inline-block;
+}
+
+/* Subtle Government Security Watermark effect */
+.watermark-pattern {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  background-image: radial-gradient(var(--gov-navy-900) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Interactive Buttons */
+.btn-gov {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-marathi);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-gov-primary {
+  background: var(--gov-saffron-500);
+  color: #ffffff;
+}
+
+.btn-gov-primary:hover {
+  background: var(--gov-saffron-600);
+}
+
+.btn-gov-outline {
+  background: transparent;
+  border-color: var(--border-subtle);
+  color: var(--gov-navy-900);
+}
+
+.btn-gov-outline:hover {
+  background: var(--bg-muted);
+  border-color: var(--border-strong);
+}
+
+/* Mobile Sticky Quick Status */
+.sticky-status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(12, 30, 54, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: white;
+  padding: 0.625rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 50;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+}
+
+@media (min-width: 768px) {
+  .sticky-status-bar {
+    display: none;
+  }
+}

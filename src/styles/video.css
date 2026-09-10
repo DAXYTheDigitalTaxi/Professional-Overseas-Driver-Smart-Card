@@ -1,0 +1,261 @@
+/* Government Video Section Styling */
+.gov-video-section {
+  margin-bottom: 1.5rem;
+}
+
+.video-container-card {
+  background: #ffffff;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.video-header-banner {
+  background: var(--bg-surface-warm);
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-hairline);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.video-badge-official {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--gov-saffron-50);
+  color: var(--gov-saffron-600);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  width: fit-content;
+  border: 1px solid rgba(217, 83, 30, 0.25);
+}
+
+.video-title-marathi {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--gov-navy-950);
+  line-height: 1.3;
+}
+
+.video-title-english {
+  font-family: var(--font-english);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Video Switcher Tabs (Pratap Sarnaik Address + 2 Instagram Reels) */
+.video-selector-tabs {
+  display: flex;
+  background: var(--bg-muted);
+  border-bottom: 1px solid var(--border-hairline);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.video-tab-btn {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.625rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-marathi);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.video-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--gov-navy-900);
+}
+
+.video-tab-btn.active {
+  background: #ffffff;
+  color: var(--gov-saffron-600);
+  border-bottom-color: var(--gov-saffron-500);
+  font-weight: 700;
+}
+
+/* Video Player Frame Container */
+.video-frame-wrapper {
+  position: relative;
+  width: 100%;
+  background: #000000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 16:9 for main address, 9:16 vertical box max-height for reels */
+.video-frame-wrapper.aspect-standard {
+  aspect-ratio: 16 / 9;
+}
+
+.video-frame-wrapper.aspect-vertical {
+  max-height: 520px;
+  aspect-ratio: 9 / 16;
+  margin: 0 auto;
+}
+
+.gov-video-element {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Video Overlay Controls */
+.video-controls-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, transparent 30%, transparent 70%, rgba(0, 0, 0, 0.7) 100%);
+  pointer-events: none;
+  opacity: 0.9;
+  transition: opacity 0.25s ease;
+}
+
+.video-frame-wrapper:hover .video-controls-overlay {
+  opacity: 1;
+}
+
+.video-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: auto;
+}
+
+.video-live-tag {
+  background: rgba(217, 83, 30, 0.9);
+  color: #ffffff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-english);
+}
+
+.video-center-action {
+  pointer-events: auto;
+  align-self: center;
+}
+
+.btn-big-play {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(217, 83, 30, 0.9);
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.btn-big-play:hover {
+  transform: scale(1.08);
+  background: #c8420b;
+}
+
+.video-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: auto;
+  gap: 0.75rem;
+}
+
+.video-control-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 0.75rem;
+  font-family: var(--font-english);
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.video-control-pill-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Video Information Footer */
+.video-card-footer {
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.video-speaker-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.speaker-avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--gov-navy-100);
+  border: 1px solid var(--gov-saffron-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gov-navy-900);
+  font-weight: bold;
+  font-size: 0.75rem;
+}
+
+.speaker-name-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.speaker-name {
+  font-weight: 700;
+  color: var(--gov-navy-900);
+}
+
+.speaker-post {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}

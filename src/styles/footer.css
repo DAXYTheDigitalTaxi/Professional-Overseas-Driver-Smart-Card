@@ -1,0 +1,119 @@
+/* Government Footer Styles */
+.gov-footer {
+  background: var(--gov-navy-950);
+  color: #cbd5e1;
+  border-top: 3px solid var(--gov-saffron-500);
+  margin-top: 3rem;
+  padding: 2.5rem 1rem 3.5rem;
+}
+
+@media (min-width: 768px) {
+  .gov-footer {
+    padding: 3rem 1.5rem 2.5rem;
+  }
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .footer-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+}
+
+.footer-brand-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  max-width: 500px;
+}
+
+.footer-emblem {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+
+.footer-gov-title {
+  font-family: var(--font-marathi);
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+}
+
+.footer-gov-eng {
+  font-family: var(--font-english);
+  font-size: 0.75rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.footer-board-title {
+  font-family: var(--font-marathi);
+  font-size: 0.875rem;
+  color: #facc15;
+  font-weight: 600;
+  margin-top: 0.35rem;
+}
+
+.footer-motto-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(217, 83, 30, 0.2);
+  border: 1px solid rgba(217, 83, 30, 0.4);
+  color: #ea6c38;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-full);
+  margin-top: 0.75rem;
+}
+
+.footer-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  font-size: 0.8125rem;
+  color: #94a3b8;
+}
+
+.footer-badge-prototype {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-english);
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.footer-bottom-bar {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  align-items: center;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .footer-bottom-bar {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
