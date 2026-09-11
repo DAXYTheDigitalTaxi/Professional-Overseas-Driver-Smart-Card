@@ -121,8 +121,8 @@ button{font:inherit}
   position: absolute;
   left: 0;
   top: 0;
-  width: 41.5%;
-  height: 22.3%;
+  width: 31%;
+  height: 19.8%;
   pointer-events: none;
   z-index: 1;
 }
@@ -137,30 +137,48 @@ button{font:inherit}
 .scHeaderBoard {
   position: absolute;
   left: 34%;
-  top: 2.6%;
+  top: clamp(20px, 4.8cqw, 26px);
   right: 16%;
   z-index: 2;
 }
 .scHeaderLeader {
-  font-size: clamp(13px, 4.0cqw, 17.5px);
+  font-size: clamp(14px, 3.85cqw, 17px);
   font-weight: 800;
   color: #111827;
-  line-height: 1.12;
+  line-height: 1.2;
   letter-spacing: -0.2px;
 }
 .scHeaderOrg {
-  font-size: clamp(10.5px, 3.25cqw, 14.2px);
+  font-size: clamp(11.5px, 3.15cqw, 14px);
   font-weight: 700;
   color: #111827;
-  line-height: 1.15;
-  margin-top: clamp(2px, 0.6cqw, 3px);
+  line-height: 1.24;
+  margin-top: clamp(3px, 0.9cqw, 5px);
 }
 .scHeaderLine {
-  width: clamp(32px, 10cqw, 44px);
-  height: clamp(2.5px, 0.8cqw, 3.5px);
+  position: relative;
+  width: clamp(32px, 8.2cqw, 40px);
+  height: clamp(2.8px, 0.75cqw, 3.6px);
   background: #F36C21;
   border-radius: 2px;
-  margin-top: clamp(3px, 1cqw, 4.5px);
+  margin-top: clamp(32px, 7.8cqw, 42px);
+}
+.scHeaderLine::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1.5px;
+  background: #F36C21;
+  opacity: 0.65;
+  pointer-events: none;
+}
+.scHeaderBoard .scHeaderLine::after {
+  width: calc(61.8cqw - clamp(32px, 8.2cqw, 40px));
+}
+.scBackHeaderBoard .scHeaderLine::after {
+  width: calc(89cqw - clamp(32px, 8.2cqw, 40px));
 }
 
 /* 3. ASHOKA EMBLEM (TOP-RIGHT) */
