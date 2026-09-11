@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { DEMO_DRIVER_DATA, type DriverProfile } from './data/driverData';
 import './styles/portal-card.css';
 
@@ -75,6 +75,35 @@ export const App: React.FC = () => {
 
   const [isVideoPlaying, setIsVideoPlaying] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoSectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    const section = videoSectionRef.current;
+    if (!video || !section || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            video.muted = true;
+            video
+              .play()
+              .then(() => setIsVideoPlaying(true))
+              .catch(() => {});
+          } else {
+            if (!video.paused) {
+              video.pause();
+            }
+          }
+        });
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   const handlePlayVideo = () => {
     if (videoRef.current) {
@@ -432,7 +461,12 @@ export const App: React.FC = () => {
       </div>
 
       {/* Video Card Container */}
-      <section className="card videoCard" id="videoSection" aria-label="Official video content">
+      <section
+        ref={videoSectionRef}
+        className="card videoCard"
+        id="videoSection"
+        aria-label="Official video content"
+      >
         <div className="videoHead">
           <div>
             <h2>Member Information & Official Updates</h2>
