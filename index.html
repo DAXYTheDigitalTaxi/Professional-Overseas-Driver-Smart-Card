@@ -6,6 +6,9 @@
 <meta name="theme-color" content="#F5F6F3">
 <meta name="color-scheme" content="light">
 <title>SmartCard Member Verification — Daxy Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --page:#f5f6f3;
@@ -33,14 +36,14 @@ body{
   min-height:100vh;
   color:var(--ink);
   background:var(--page);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Noto Sans Devanagari",Arial,sans-serif;
+  font-family:'Mukta', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
 button{font:inherit}
-.page{width:min(100%,520px);margin:0 auto;padding:0 12px calc(28px + env(safe-area-inset-bottom))}
+.page{width:min(100%,960px);margin:0 auto;padding:0 12px calc(28px + env(safe-area-inset-bottom))}
 .tricolor{height:3px;margin:0 -12px 12px;background:linear-gradient(90deg,#e88b22 0 33.33%,#fff 33.33% 66.66%,#16834f 66.66%);box-shadow:0 1px 0 rgba(0,0,0,.03)}
-.header{display:grid;grid-template-columns:46px 1fr 46px;align-items:center;gap:10px;padding:4px 2px 14px}
+.header{width:100%;max-width:520px;margin:0 auto;display:grid;grid-template-columns:46px 1fr 46px;align-items:center;gap:10px;padding:4px 2px 14px}
 .emblem{width:46px;height:46px;border-radius:50%;border:1px solid var(--line-strong);background:#fff;display:grid;place-items:center;overflow:hidden}
 .emblem img{width:100%;height:100%;object-fit:contain}
 .board{text-align:center;min-width:0}
@@ -48,31 +51,476 @@ button{font:inherit}
 .board .en{margin-top:4px;font-size:8px;line-height:1.2;color:var(--muted);letter-spacing:.36px;text-transform:uppercase}
 .dighe{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 0 0 1px var(--line-strong);background:#eaece8}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow)}
-.verify{padding:16px}
-.verifyTop{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--line)}
-.verifiedBadge{display:inline-flex;align-items:center;gap:8px;color:var(--green);font-size:12px;font-weight:850;letter-spacing:.15px;text-transform:uppercase}
-.check{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--green);box-shadow:0 0 0 4px var(--green-bg)}
-.check svg{width:13px;height:13px}
-.liveRecord{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
-.identity{display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;align-items:flex-start;padding:16px 0 14px}
-.photo{width:92px;aspect-ratio:3/4;border-radius:var(--r-md);overflow:hidden;background:linear-gradient(145deg,#e9edef,#cbd3d8);border:1px solid var(--line-strong);position:relative;flex-shrink:0}
-.photo img{width:100%;height:100%;object-fit:cover;display:block}
-.photo svg{width:100%;height:100%;display:none}
-.photoMark{position:absolute;right:5px;bottom:5px;background:rgba(17,24,33,.72);color:#fff;font-size:7px;line-height:1;padding:4px 5px;border-radius:6px;letter-spacing:.45px;text-transform:uppercase;backdrop-filter:blur(8px)}
-.name{font-size:23px;line-height:1.05;font-weight:820;letter-spacing:-.58px;color:#0f1720}
-.name-en{font-size:13.5px;color:var(--muted);font-weight:600;margin-top:2px}
-.idline{margin-top:7px;color:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
-.idline b{color:var(--ink-2);font-weight:750}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
-.chip{display:inline-flex;align-items:center;min-height:25px;padding:0 8px;border:1px solid var(--line);border-radius:999px;background:#fafbf9;color:#48545f;font-size:9.5px;font-weight:700}
-.chip.active{background:var(--green-bg);border-color:var(--green-line);color:var(--green)}
-.details{border-top:1px solid var(--line);padding-top:2px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
-.row:last-child{border-bottom:0;padding-bottom:4px}
-.item{min-width:0}
-.label{font-size:8.5px;line-height:1;text-transform:uppercase;letter-spacing:.68px;color:var(--muted-2);font-weight:800;margin-bottom:6px}
-.value{font-size:12.5px;line-height:1.25;color:var(--ink-2);font-weight:730;word-break:break-word}
-.value.green{color:var(--green)}
+
+/* SMART CARD VIEW TOGGLE (BOTH / FRONT / BACK) */
+.cardToggleWrap {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 14px auto;
+  background: #eaece8;
+  padding: 3px;
+  border-radius: 10px;
+  gap: 3px;
+  width: fit-content;
+  max-width: 100%;
+}
+.cardTab {
+  border: none;
+  background: transparent;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #525b63;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: inherit;
+  transition: background .18s ease, color .18s ease;
+  white-space: nowrap;
+}
+.cardTab.active {
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.cardTab svg { width: 13px; height: 13px; }
+
+/* SIDE-BY-SIDE PRESENTATION SHOWCASE */
+.cardShowcaseWrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+  margin: 0 auto 16px auto;
+}
+
+/* SMART CARD CONTAINER: Exact 439 x 626 Aspect Ratio with Fluid Container Query Scaling */
+.smartCardCanvas {
+  container-type: inline-size;
+  width: 100%;
+  max-width: 439px;
+  aspect-ratio: 439 / 626;
+  background: #ffffff;
+  border: 1px solid #d9dce1;
+  border-radius: clamp(12px, 4.1cqw, 18px);
+  box-shadow: 0 10px 28px rgba(17, 24, 39, 0.08), 0 2px 6px rgba(17, 24, 39, 0.03);
+  position: relative;
+  overflow: hidden;
+  flex: 0 1 min(100%, 439px);
+  min-width: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+/* 1. TOP-LEFT ANAND DIGHE CORNER */
+.scDigheCorner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 41.5%;
+  height: 22.3%;
+  pointer-events: none;
+  z-index: 1;
+}
+.scDigheCorner img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}
+
+/* 2. HEADER BOARD TEXT */
+.scHeaderBoard {
+  position: absolute;
+  left: 34%;
+  top: 2.6%;
+  right: 16%;
+  z-index: 2;
+}
+.scHeaderLeader {
+  font-size: clamp(13px, 4.0cqw, 17.5px);
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.12;
+  letter-spacing: -0.2px;
+}
+.scHeaderOrg {
+  font-size: clamp(10.5px, 3.25cqw, 14.2px);
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.15;
+  margin-top: clamp(2px, 0.6cqw, 3px);
+}
+.scHeaderLine {
+  width: clamp(32px, 10cqw, 44px);
+  height: clamp(2.5px, 0.8cqw, 3.5px);
+  background: #F36C21;
+  border-radius: 2px;
+  margin-top: clamp(3px, 1cqw, 4.5px);
+}
+
+/* 3. ASHOKA EMBLEM (TOP-RIGHT) */
+.scAshokaEmblem {
+  position: absolute;
+  right: 4.2%;
+  top: 2.5%;
+  width: 12.5%;
+  z-index: 2;
+  text-align: right;
+}
+.scAshokaEmblem img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 4. TITLE SECTION */
+.scTitleWrap {
+  position: absolute;
+  left: 6.38%;
+  top: 23.5%;
+  width: 63.0%;
+  z-index: 2;
+}
+.scTitleText {
+  font-size: clamp(15.5px, 4.85cqw, 21.2px);
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.12;
+  letter-spacing: -0.3px;
+}
+.scTitleLine {
+  width: clamp(32px, 10cqw, 44px);
+  height: clamp(2.5px, 0.8cqw, 3.5px);
+  background: #F36C21;
+  border-radius: 2px;
+  margin-top: clamp(4px, 1.2cqw, 5.5px);
+}
+
+/* 5. HOLOGRAM (Directly opposite Title) */
+.scHologram {
+  position: absolute;
+  left: 73.2%;
+  top: 23.2%;
+  width: 23.2%;
+  aspect-ratio: 1 / 1;
+  display: block;
+  object-fit: contain;
+  z-index: 2;
+}
+
+/* 6. LEFT ORANGE ACCENT STRIPE */
+.scLeftStripe {
+  position: absolute;
+  left: 0;
+  top: 39.5%;
+  bottom: 0;
+  width: clamp(8px, 2.5cqw, 11px);
+  background: #F36C21;
+  border-radius: 4px 4px 0 clamp(12px, 4.1cqw, 18px);
+  z-index: 3;
+}
+
+/* 7. DRIVER PHOTO */
+.scDriverPhoto {
+  position: absolute;
+  left: 6.38%;
+  top: 39.5%;
+  width: 30.8%;
+  aspect-ratio: 137 / 182;
+  border-radius: clamp(6px, 1.8cqw, 8px);
+  overflow: hidden;
+  border: 1px solid #E5E7EB;
+  background: #eef1f4;
+  z-index: 2;
+}
+.scDriverPhoto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* BACKGROUND WATERMARK BEHIND DETAILS */
+.scWatermark {
+  position: absolute;
+  left: 36%;
+  top: 46%;
+  width: 36%;
+  opacity: 0.10;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 8. DRIVER DETAILS COLUMN */
+.scDetailsCol {
+  position: absolute;
+  left: 39.2%;
+  top: 39.5%;
+  width: 32.8%;
+  height: 48.5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 2;
+}
+.scDetailRow {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #f0f2f5;
+  padding-bottom: clamp(1px, 0.4cqw, 2.5px);
+}
+.scDetailRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.scDetailLabel {
+  font-size: clamp(8.5px, 2.6cqw, 11.5px);
+  font-weight: 500;
+  color: #4B5563;
+  line-height: 1.1;
+  margin-bottom: 1px;
+}
+.scDetailValue {
+  font-size: clamp(11.5px, 3.4cqw, 15px);
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.2;
+  word-break: break-word;
+}
+.scDetailValue.mono {
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 9. VERTICAL DIVIDER */
+.scVertDivider {
+  position: absolute;
+  left: 73.0%;
+  top: 39.5%;
+  height: 48.5%;
+  width: 1px;
+  background: #E5E7EB;
+  z-index: 2;
+}
+
+/* 10. QR INSTRUCTION */
+.scQrWrap {
+  position: absolute;
+  left: 74.0%;
+  top: 41.5%;
+  width: 23.0%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 2;
+}
+.scQrInstruction {
+  font-size: clamp(9px, 2.7cqw, 11.5px);
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.18;
+}
+.scQrDash {
+  width: clamp(16px, 4.5cqw, 20px);
+  height: clamp(2px, 0.5cqw, 2.5px);
+  background: #F36C21;
+  border-radius: 1px;
+  margin: 3px auto 0 auto;
+}
+
+/* 11. QR CODE CARD CONTAINER (Matching Reference Rounded Card) */
+.scQrCard {
+  position: absolute;
+  left: 75.5%;
+  top: 49.5%;
+  width: 20.2%;
+  aspect-ratio: 1 / 1;
+  background: #ffffff;
+  border: 1px solid #E5E7EB;
+  border-radius: clamp(6px, 1.8cqw, 8px);
+  padding: clamp(3px, 0.8cqw, 4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.scQrCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* 12. MAHARASHTRA MAP */
+.scMahaMap {
+  position: absolute;
+  left: 75.0%;
+  top: 73.0%;
+  width: 21.0%;
+  height: auto;
+  display: block;
+  z-index: 2;
+}
+
+/* 13. FRONT FOOTER */
+.scFooterText {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2.2%;
+  text-align: center;
+  font-size: clamp(6.5px, 1.8cqw, 8px);
+  font-weight: 700;
+  color: #9CA3AF;
+  letter-spacing: clamp(2.5px, 0.8cqw, 3.8px);
+  z-index: 2;
+}
+
+/* ===================================================
+   BACK CARD SPECIFIC STYLING
+=================================================== */
+.scBackHeaderBoard {
+  position: absolute;
+  left: 6.38%;
+  top: 2.6%;
+  right: 16%;
+  z-index: 2;
+}
+
+.scBackFeatures {
+  position: absolute;
+  left: 6.38%;
+  right: 4.2%;
+  top: 20.5%;
+  height: 53.5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.scBackRow {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2.6cqw, 12px);
+  padding-bottom: clamp(6px, 1.6cqw, 7.5px);
+  border-bottom: 1px solid #f0f2f5;
+  flex: 1;
+}
+.scBackRow:last-child {
+  border-bottom: none;
+}
+
+.scBackIcon {
+  width: clamp(34px, 10.2cqw, 45px);
+  height: clamp(34px, 10.2cqw, 45px);
+  flex: 0 0 auto;
+  background: #ffeedd;
+  border-radius: clamp(8px, 2.5cqw, 11px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #F36C21;
+}
+.scBackIcon svg {
+  width: 55%;
+  height: 55%;
+  display: block;
+}
+
+.scBackContent {
+  flex: 1;
+  min-width: 0;
+}
+.scBackTitle {
+  font-size: clamp(12px, 3.6cqw, 16px);
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.15;
+}
+.scBackSub {
+  font-size: clamp(9px, 2.7cqw, 12px);
+  font-weight: 500;
+  color: #4B5563;
+  line-height: 1.15;
+  margin-top: clamp(1px, 0.4cqw, 2px);
+}
+
+.scBackRight {
+  border-left: 1px solid #E5E7EB;
+  padding-left: clamp(8px, 2.5cqw, 12px);
+  text-align: center;
+  flex: 0 0 auto;
+}
+.scBackRight.emergency {
+  min-width: clamp(60px, 17cqw, 75px);
+}
+.scBackRight.personal {
+  min-width: clamp(80px, 24cqw, 105px);
+}
+
+.scEmerNum {
+  font-size: clamp(16px, 4.8cqw, 21px);
+  font-weight: 800;
+  color: #F36C21;
+  line-height: 1;
+}
+.scEmerLabel {
+  font-size: clamp(9px, 2.7cqw, 12px);
+  font-weight: 700;
+  color: #F36C21;
+  margin-top: 2px;
+}
+.scPersonalNum {
+  font-size: clamp(12.5px, 3.7cqw, 16px);
+  font-weight: 800;
+  color: #111827;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 4. BANDRA-WORLI SEA LINK GRAPHIC WITH SIGNATURE */
+.scBridgeGraphic {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4.2%;
+  height: 18%;
+  z-index: 2;
+  overflow: hidden;
+}
+.scBridgeGraphic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+  display: block;
+}
+
+/* 5. BACK FOOTER */
+.scBackFooter {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1.6%;
+  text-align: center;
+  font-size: clamp(6px, 1.7cqw, 7.5px);
+  font-weight: 600;
+  color: #9CA3AF;
+  letter-spacing: clamp(1px, 0.3cqw, 1.5px);
+  z-index: 2;
+}
+.scBackFooter span {
+  color: #D1D5DB;
+  margin: 0 4px;
+}
 .integrity{display:flex;gap:10px;align-items:flex-start;margin-top:13px;padding:11px 12px;border:1px solid var(--green-line);border-radius:var(--r-md);background:var(--green-bg)}
 .integrityIcon{width:24px;height:24px;display:grid;place-items:center;flex:0 0 auto;color:var(--green)}
 .integrityIcon svg{width:18px;height:18px}
@@ -102,7 +550,6 @@ button{font:inherit}
 .prototype{display:inline-block;margin-top:7px;padding:4px 7px;border:1px dashed #c7cbc5;border-radius:6px;text-transform:uppercase;letter-spacing:.9px;font-size:7.5px;color:#8b928d}
 @media(min-width:460px){.page{padding-left:16px;padding-right:16px}.tricolor{margin-left:-16px;margin-right:-16px}.verify{padding:18px}.videoHead,.videoFoot{padding-left:17px;padding-right:17px}}
 @media(max-width:350px){.board .en{display:none}.name{font-size:20px}.identity{grid-template-columns:82px 1fr}.photo{width:82px}.row{gap:10px}.verifiedBadge{font-size:11px}}
-@media(prefers-reduced-motion:no-preference){.card{animation:rise .35s ease both}.videoCard{animation-delay:.05s}@keyframes rise{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}}
 @media print{body{background:#fff}.page{max-width:520px}.card{box-shadow:none}.videoCard,.notice{display:none}}
 </style>
 </head>
@@ -121,56 +568,179 @@ button{font:inherit}
     <img class="dighe" src="./assets/anand-dighe-poster.jpg" alt="Dharmaveer Anand Dighe Saheb" onerror="this.src='https://images.loksattaimg.com/2023/01/Dharmaveer-Anand-Dighe-Birth-Anniversary-13.jpg'" referrerpolicy="no-referrer">
   </header>
 
-  <section class="card verify" aria-label="SmartCard member verification">
-    <div class="verifyTop">
-      <div class="verifiedBadge">
-        <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 9.2 17 19 7"/></svg></span>
-        <span id="verifyLabel">Verified Member</span>
-      </div>
-      <div class="liveRecord" id="verifyTime">Verified now</div>
-    </div>
+  <!-- Card View Mode Selector (Both Sides / Front / Back) -->
+  <div class="cardToggleWrap" role="tablist" aria-label="स्मार्ट कार्ड बाजू निवडा">
+    <button type="button" class="cardTab active" id="tabBoth" role="tab" aria-selected="true" onclick="switchCardMode('both')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="9" height="14" rx="1.5"/><rect x="13" y="5" width="9" height="14" rx="1.5"/></svg>
+      दोन्ही बाजू (Both Sides)
+    </button>
+    <button type="button" class="cardTab" id="tabFront" role="tab" aria-selected="false" onclick="switchCardMode('front')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h4M7 16h6"/></svg>
+      समोरची बाजू (Front)
+    </button>
+    <button type="button" class="cardTab" id="tabBack" role="tab" aria-selected="false" onclick="switchCardMode('back')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m9 12 2 2 4-4"/></svg>
+      मागील बाजू (Back)
+    </button>
+  </div>
 
-    <div class="identity">
-      <div class="photo" aria-label="Member photograph">
-        <img id="memberPhoto" src="./assets/driver-photo.jpg" alt="Member photograph" onerror="this.src='./public/assets/driver-photo.jpg'">
-        <span class="photoMark">Photo ID</span>
+  <!-- Rebuilt Digital ID Card Showcase: Front and Back Side by Side (1:1 Reference Match) -->
+  <div class="cardShowcaseWrap" id="cardShowcase">
+    <!-- FRONT CARD -->
+    <section class="card smartCardCanvas" id="frontCard" aria-label="व्यावसायिक प्रवासी वाहन चालक स्मार्ट कार्ड (समोरची बाजू)">
+      <div class="scDigheCorner">
+        <img src="./assets/card-dighe-corner.png" alt="धर्मवीर आनंद दिघे साहेब" onerror="this.src='./public/assets/card-dighe-corner.png'">
       </div>
-      <div>
-        <div class="name" id="name">संजय तुकाराम पाटील</div>
-        <div class="name-en" id="nameEn">Sanjay Tukaram Patil</div>
-        <div class="idline">SmartCard ID&nbsp; <b id="member">MHDPWB001234</b></div>
-        <div class="chips">
-          <span class="chip active" id="membership">Active</span>
-          <span class="chip" id="vehicleType">ऑटो-रिक्षा / टॅक्सी</span>
-          <span class="chip" id="districtChip">पुणे (MH12)</span>
+      <div class="scHeaderBoard">
+        <div class="scHeaderLeader">धर्मवीर आनंद दिघे साहेब</div>
+        <div class="scHeaderOrg">महाराष्ट्र प्रवासी वाहन चालक<br>कल्याण मंडळ</div>
+        <div class="scHeaderLine" aria-hidden="true"></div>
+      </div>
+      <div class="scAshokaEmblem">
+        <img src="./assets/ashoka-emblem.png" alt="महाराष्ट्र शासन" onerror="this.src='./public/assets/ashoka-emblem.png'">
+      </div>
+      <div class="scTitleWrap">
+        <div class="scTitleText">व्यावसायिक प्रवासी वाहन चालक<br>स्मार्ट कार्ड</div>
+        <div class="scTitleLine" aria-hidden="true"></div>
+      </div>
+      <img class="scHologram" src="./assets/card-hologram.png" alt="सुरक्षा होलोग्राम" onerror="this.src='./public/assets/card-hologram.png'">
+      <div class="scLeftStripe" aria-hidden="true"></div>
+      <div class="scDriverPhoto">
+        <img id="memberPhoto" src="./assets/driver-exact.jpg" alt="संजय तुकाराम पाटील" onerror="this.src='./assets/driver-photo.jpg'">
+      </div>
+      <img class="scWatermark" src="./assets/maharashtra-watermark.png" alt="" aria-hidden="true">
+      <div class="scDetailsCol">
+        <div class="scDetailRow">
+          <div class="scDetailLabel">नाव</div>
+          <div class="scDetailValue" id="name">संजय तुकाराम पाटील</div>
+        </div>
+        <div class="scDetailRow">
+          <div class="scDetailLabel">जन्म तारीख</div>
+          <div class="scDetailValue mono" id="dob">15 जाने 1990</div>
+        </div>
+        <div class="scDetailRow">
+          <div class="scDetailLabel">वैधता</div>
+          <div class="scDetailValue mono" id="valid">31 डिसें 2028</div>
+        </div>
+        <div class="scDetailRow">
+          <div class="scDetailLabel">रक्त गट / Blood Group</div>
+          <div class="scDetailValue" id="bloodGroup">B+</div>
+        </div>
+        <div class="scDetailRow">
+          <div class="scDetailLabel">वाहन प्रकार</div>
+          <div class="scDetailValue" id="vehicleType">ऑटो-रिक्षा</div>
+        </div>
+        <div class="scDetailRow">
+          <div class="scDetailLabel">परवाना क्रमांक</div>
+          <div class="scDetailValue mono" id="badge">MH12 20180001234</div>
         </div>
       </div>
-    </div>
+      <div class="scVertDivider" aria-hidden="true"></div>
+      <div class="scQrWrap">
+        <div class="scQrInstruction">तपासणीसाठी<br>QR स्कॅन करा</div>
+        <div class="scQrDash" aria-hidden="true"></div>
+      </div>
+      <div class="scQrCard">
+        <img class="scQrImg" src="./assets/card-qr.png" alt="QR कोड" onerror="this.src='./public/assets/card-qr.png'">
+      </div>
+      <img class="scMahaMap" src="./assets/card-maha-map.png" alt="महाराष्ट्र" onerror="this.src='./public/assets/card-maha-map.png'">
+      <div class="scFooterText">DAXY PROTOTYPE</div>
+    </section>
 
-    <div class="details">
-      <div class="row">
-        <div class="item"><div class="label">RTO</div><div class="value" id="rto">MH-12 · Pune</div></div>
-        <div class="item"><div class="label">Driver / Badge No.</div><div class="value" id="badge">MH12 20180001234</div></div>
+    <!-- BACK CARD -->
+    <section class="card smartCardCanvas" id="backCard" aria-label="व्यावसायिक प्रवासी वाहन चालक स्मार्ट कार्ड (मागील बाजू)">
+      <div class="scBackHeaderBoard">
+        <div class="scHeaderLeader">धर्मवीर आनंद दिघे साहेब</div>
+        <div class="scHeaderOrg">महाराष्ट्र प्रवासी वाहन चालक<br>कल्याण मंडळ</div>
+        <div class="scHeaderLine" aria-hidden="true"></div>
       </div>
-      <div class="row">
-        <div class="item"><div class="label">Aadhaar Card No.</div><div class="value" id="aadhaar">**** **** 6789</div></div>
-        <div class="item"><div class="label">Date of Birth</div><div class="value" id="dob">15 Jun 1990</div></div>
+      <div class="scAshokaEmblem">
+        <img src="./assets/ashoka-emblem.png" alt="महाराष्ट्र शासन" onerror="this.src='./public/assets/ashoka-emblem.png'">
       </div>
-      <div class="row">
-        <div class="item"><div class="label">Card Issue Date</div><div class="value" id="issueDate">01 Jun 2024</div></div>
-        <div class="item"><div class="label">Membership Validity</div><div class="value green" id="valid">31 Dec 2028</div></div>
+      <div class="scBackFeatures">
+        <div class="scBackRow">
+          <div class="scBackIcon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+          <div class="scBackContent">
+            <div class="scBackTitle">चालकाची माहिती</div>
+            <div class="scBackSub">नाव, पत्ता, वाहन तपशील</div>
+          </div>
+        </div>
+        <div class="scBackRow">
+          <div class="scBackIcon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+          </div>
+          <div class="scBackContent">
+            <div class="scBackTitle">शासकीय योजना व लाभ</div>
+            <div class="scBackSub">कल्याणकारी योजना, विमा, आर्थिक मदत</div>
+          </div>
+        </div>
+        <div class="scBackRow">
+          <div class="scBackIcon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div class="scBackContent">
+            <div class="scBackTitle">माहिती व जनजागृती व्हिडीओ</div>
+            <div class="scBackSub">रस्ते सुरक्षा, नियम, मार्गदर्शन</div>
+          </div>
+        </div>
+        <div class="scBackRow">
+          <div class="scBackIcon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          </div>
+          <div class="scBackContent">
+            <div class="scBackTitle">आपत्कालीन संपर्क</div>
+            <div class="scBackSub">अपघात / वैद्यकीय / तांत्रिक मदत</div>
+          </div>
+          <div class="scBackRight emergency">
+            <div class="scEmerNum">112</div>
+            <div class="scEmerLabel">(सर्व सेवा)</div>
+          </div>
+        </div>
+        <div class="scBackRow">
+          <div class="scBackIcon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </div>
+          <div class="scBackContent">
+            <div class="scBackTitle">आपत्कालीन संपर्क (वैयक्तिक)</div>
+            <div class="scBackSub">Emergency Contact</div>
+          </div>
+          <div class="scBackRight personal">
+            <div class="scPersonalNum">98765 43210</div>
+          </div>
+        </div>
       </div>
-      <div class="row">
-        <div class="item"><div class="label">Card Number</div><div class="value" id="cardNumber">MHDPWB25000123</div></div>
-        <div class="item"><div class="label">Record Status</div><div class="value green" id="recordStatus">Valid & Active</div></div>
+      <div class="scBridgeGraphic">
+        <img src="./assets/card-back-bridge.png" alt="Maharashtra Moves Together" onerror="this.src='./public/assets/card-back-bridge.png'">
       </div>
-    </div>
+      <div class="scFooterText scBackFooter">
+        DAXY PROTOTYPE <span>|</span> केवळ संकल्पना नमुना <span>|</span> Not Government Issued
+      </div>
+    </section>
+  </div>
 
-    <div class="integrity">
-      <div class="integrityIcon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 5 6v5c0 4.8 2.9 8.1 7 10 4.1-1.9 7-5.2 7-10V6l-7-3Z"/><path d="m8.8 12 2.1 2.2 4.4-4.5"/></svg></div>
-      <div><strong>QR verification matched</strong><p>This SmartCard record is shown as active in the verification prototype. Always scan the physical card QR for field verification.</p></div>
+  <!-- Verification Result Banner: Preserves instant field scan feedback and search params -->
+  <div class="integrity" id="verificationResult">
+    <div class="integrityIcon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 3 5 6v5c0 4.8 2.9 8.1 7 10 4.1-1.9 7-5.2 7-10V6l-7-3Z"/>
+        <path d="m8.8 12 2.1 2.2 4.4-4.5"/>
+      </svg>
     </div>
-  </section>
+    <div>
+      <strong><span id="verifyLabel">Verified Member</span> · <span id="recordStatus" class="green">Valid & Active</span></strong>
+      <p>SmartCard ID: <b id="member">MHDPWB001234</b> · RTO: <span id="rto">MH-12 · Pune</span> · <span id="verifyTime">Verified now</span></p>
+      <div style="display:none;" aria-hidden="true">
+        <span id="membership" class="active">Active</span>
+        <span id="nameEn">Sanjay Tukaram Patil</span>
+        <span id="districtChip">पुणे (MH12)</span>
+        <span id="aadhaar">**** **** 6789</span>
+        <span id="issueDate">01 Jun 2024</span>
+        <span id="cardNumber">MHDPWB25000123</span>
+      </div>
+    </div>
+  </div>
 
   <section class="card videoCard" id="videoSection" aria-label="Official video content">
     <div class="videoHead">
@@ -249,6 +819,44 @@ playBtn.addEventListener('click',startVideo);
 poster.addEventListener('click',startVideo);
 video.addEventListener('play',()=>poster.classList.add('hide'));
 video.addEventListener('ended',()=>poster.classList.remove('hide'));
+
+function switchCardMode(mode) {
+  const front = document.getElementById('frontCard');
+  const back = document.getElementById('backCard');
+  const tabBoth = document.getElementById('tabBoth');
+  const tabF = document.getElementById('tabFront');
+  const tabB = document.getElementById('tabBack');
+  if (!front || !back) return;
+
+  [tabBoth, tabF, tabB].forEach(t => {
+    if (t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); }
+  });
+
+  if (mode === 'front') {
+    front.style.display = 'block';
+    back.style.display = 'none';
+    if (tabF) { tabF.classList.add('active'); tabF.setAttribute('aria-selected', 'true'); }
+  } else if (mode === 'back') {
+    front.style.display = 'none';
+    back.style.display = 'block';
+    if (tabB) { tabB.classList.add('active'); tabB.setAttribute('aria-selected', 'true'); }
+  } else {
+    front.style.display = 'block';
+    back.style.display = 'block';
+    if (tabBoth) { tabBoth.classList.add('active'); tabBoth.setAttribute('aria-selected', 'true'); }
+  }
+}
+function switchCardSide(side) {
+  switchCardMode(side);
+}
+const sideParam = qs.get('side');
+if (sideParam === 'front') {
+  switchCardMode('front');
+} else if (sideParam === 'back') {
+  switchCardMode('back');
+} else {
+  switchCardMode('both');
+}
 </script>
 </body>
 </html>

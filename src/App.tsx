@@ -57,6 +57,14 @@ export const App: React.FC = () => {
     return params.get('status') || 'Active';
   });
 
+  const [cardMode, setCardMode] = useState<'both' | 'front' | 'back'>(() => {
+    if (typeof window === 'undefined') return 'both';
+    const side = new URLSearchParams(window.location.search).get('side');
+    if (side === 'front') return 'front';
+    if (side === 'back') return 'back';
+    return 'both';
+  });
+
   const [verifiedTime] = useState<string>(() => {
     const now = new Date();
     return (
@@ -123,133 +131,305 @@ export const App: React.FC = () => {
         />
       </header>
 
-      {/* Verification Card */}
-      <section className="card verify" aria-label="SmartCard member verification">
-        <div className="verifyTop">
-          <div className="verifiedBadge">
-            <span className="check">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12.5 9.2 17 19 7" />
-              </svg>
-            </span>
-            <span id="verifyLabel">
-              {isStatusActive ? 'Verified Member' : `${status} Member`}
-            </span>
-          </div>
-          <div className="liveRecord" id="verifyTime">{verifiedTime}</div>
-        </div>
+      {/* Card View Mode Selector (Both Sides / Front / Back) */}
+      <div className="cardToggleWrap" role="tablist" aria-label="स्मार्ट कार्ड बाजू निवडा">
+        <button
+          type="button"
+          className={`cardTab ${cardMode === 'both' ? 'active' : ''}`}
+          id="tabBoth"
+          role="tab"
+          aria-selected={cardMode === 'both'}
+          onClick={() => setCardMode('both')}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
+            <rect x="2" y="5" width="9" height="14" rx="1.5" />
+            <rect x="13" y="5" width="9" height="14" rx="1.5" />
+          </svg>
+          दोन्ही बाजू (Both Sides)
+        </button>
+        <button
+          type="button"
+          className={`cardTab ${cardMode === 'front' ? 'active' : ''}`}
+          id="tabFront"
+          role="tab"
+          aria-selected={cardMode === 'front'}
+          onClick={() => setCardMode('front')}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
+            <rect x="3" y="4" width="18" height="16" rx="2" />
+            <path d="M7 8h10M7 12h4M7 16h6" />
+          </svg>
+          समोरची बाजू (Front)
+        </button>
+        <button
+          type="button"
+          className={`cardTab ${cardMode === 'back' ? 'active' : ''}`}
+          id="tabBack"
+          role="tab"
+          aria-selected={cardMode === 'back'}
+          onClick={() => setCardMode('back')}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
+            <rect x="3" y="4" width="18" height="16" rx="2" />
+            <path d="m9 12 2 2 4-4" />
+          </svg>
+          मागील बाजू (Back)
+        </button>
+      </div>
 
-        {/* Identity: Driver Photo + Name + Chips */}
-        <div className="identity">
-          <div className="photo" aria-label="Member photograph">
+      {/* Rebuilt Digital ID Card Showcase: Front and Back Side by Side (1:1 Reference Match) */}
+      <div className="cardShowcaseWrap" id="cardShowcase">
+        {/* FRONT CARD */}
+        <section
+          className="card smartCardCanvas"
+          id="frontCard"
+          style={{ display: cardMode === 'back' ? 'none' : 'block' }}
+          aria-label="व्यावसायिक प्रवासी वाहन चालक स्मार्ट कार्ड (समोरची बाजू)"
+        >
+          <div className="scDigheCorner">
+            <img
+              src="./assets/card-dighe-corner.png"
+              alt="धर्मवीर आनंद दिघे साहेब"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = './public/assets/card-dighe-corner.png';
+              }}
+            />
+          </div>
+          <div className="scHeaderBoard">
+            <div className="scHeaderLeader">धर्मवीर आनंद दिघे साहेब</div>
+            <div className="scHeaderOrg">
+              महाराष्ट्र प्रवासी वाहन चालक<br />कल्याण मंडळ
+            </div>
+            <div className="scHeaderLine" aria-hidden="true" />
+          </div>
+          <div className="scAshokaEmblem">
+            <img
+              src="./assets/ashoka-emblem.png"
+              alt="महाराष्ट्र शासन"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = './public/assets/ashoka-emblem.png';
+              }}
+            />
+          </div>
+          <div className="scTitleWrap">
+            <div className="scTitleText">
+              व्यावसायिक प्रवासी वाहन चालक<br />स्मार्ट कार्ड
+            </div>
+            <div className="scTitleLine" aria-hidden="true" />
+          </div>
+          <img
+            className="scHologram"
+            src="./assets/card-hologram.png"
+            alt="सुरक्षा होलोग्राम"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = './public/assets/card-hologram.png';
+            }}
+          />
+          <div className="scLeftStripe" aria-hidden="true" />
+          <div className="scDriverPhoto">
             <img
               id="memberPhoto"
               src={profile.driverPhotoUrl}
-              alt={profile.nameEnglish}
+              alt={profile.nameMarathi}
               onError={(e) => {
-                (e.target as HTMLImageElement).src = './assets/driver-photo.jpg';
+                (e.target as HTMLImageElement).src = './assets/driver-exact.jpg';
               }}
             />
-            <span className="photoMark">Photo ID</span>
           </div>
-
-          <div>
-            <div className="name" id="name">{profile.nameMarathi}</div>
-            <div className="name-en" id="nameEn">{profile.nameEnglish}</div>
-            <div className="idline">SmartCard ID&nbsp; <b id="member">{profile.driverId}</b></div>
-            <div className="chips">
-              <span
-                className={`chip ${isStatusActive ? 'active' : ''}`}
-                id="membership"
-                style={
-                  !isStatusActive
-                    ? { background: '#fff1f0', borderColor: '#f0cbc7', color: '#a33d33' }
-                    : undefined
-                }
-              >
-                {status}
-              </span>
-              <span className="chip" id="vehicleType">{profile.vehicleTypeMarathi}</span>
-              <span className="chip" id="districtChip">{profile.rtoMarathi}</span>
+          <img className="scWatermark" src="./assets/maharashtra-watermark.png" alt="" aria-hidden="true" />
+          <div className="scDetailsCol">
+            <div className="scDetailRow">
+              <div className="scDetailLabel">नाव</div>
+              <div className="scDetailValue" id="name">{profile.nameMarathi}</div>
             </div>
-          </div>
-        </div>
-
-        {/* Detail Rows */}
-        <div className="details">
-          <div className="row">
-            <div className="item">
-              <div className="label">RTO</div>
-              <div className="value" id="rto">{profile.rtoMarathi}</div>
+            <div className="detailRow scDetailRow">
+              <div className="scDetailLabel">जन्म तारीख</div>
+              <div className="scDetailValue mono" id="dob">{profile.dateOfBirthMarathi}</div>
             </div>
-            <div className="item">
-              <div className="label">Driver / Badge No.</div>
-              <div className="value" id="badge">{profile.permitNumber}</div>
+            <div className="detailRow scDetailRow">
+              <div className="scDetailLabel">वैधता</div>
+              <div className="scDetailValue mono" id="valid">{profile.validityDateMarathi}</div>
+            </div>
+            <div className="detailRow scDetailRow">
+              <div className="scDetailLabel">रक्त गट / Blood Group</div>
+              <div className="scDetailValue" id="bloodGroup">B+</div>
+            </div>
+            <div className="detailRow scDetailRow">
+              <div className="scDetailLabel">वाहन प्रकार</div>
+              <div className="scDetailValue" id="vehicleType">{profile.vehicleTypeMarathi}</div>
+            </div>
+            <div className="detailRow scDetailRow">
+              <div className="scDetailLabel">परवाना क्रमांक</div>
+              <div className="scDetailValue mono" id="badge">{profile.permitNumber}</div>
             </div>
           </div>
-
-          <div className="row">
-            <div className="item">
-              <div className="label">Aadhaar Card No.</div>
-              <div className="value" id="aadhaar">{profile.aadhaarMasked}</div>
+          <div className="scVertDivider" aria-hidden="true" />
+          <div className="scQrWrap">
+            <div className="scQrInstruction">
+              तपासणीसाठी<br />QR स्कॅन करा
             </div>
-            <div className="item">
-              <div className="label">Date of Birth</div>
-              <div className="value" id="dob">{profile.dateOfBirthMarathi}</div>
-            </div>
+            <div className="scQrDash" aria-hidden="true" />
           </div>
+          <div className="scQrCard">
+            <img
+              className="scQrImg"
+              src="./assets/card-qr.png"
+              alt="QR कोड"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = './public/assets/card-qr.png';
+              }}
+            />
+          </div>
+          <img
+            className="scMahaMap"
+            src="./assets/card-maha-map.png"
+            alt="महाराष्ट्र"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = './public/assets/card-maha-map.png';
+            }}
+          />
+          <div className="scFooterText">DAXY PROTOTYPE</div>
+        </section>
 
-          <div className="row">
-            <div className="item">
-              <div className="label">Card Issue Date</div>
-              <div className="value" id="issueDate">{profile.issueDateMarathi}</div>
+        {/* BACK CARD */}
+        <section
+          className="card smartCardCanvas"
+          id="backCard"
+          style={{ display: cardMode === 'front' ? 'none' : 'block' }}
+          aria-label="व्यावसायिक प्रवासी वाहन चालक स्मार्ट कार्ड (मागील बाजू)"
+        >
+          <div className="scBackHeaderBoard">
+            <div className="scHeaderLeader">धर्मवीर आनंद दिघे साहेब</div>
+            <div className="scHeaderOrg">
+              महाराष्ट्र प्रवासी वाहन चालक<br />कल्याण मंडळ
             </div>
-            <div className="item">
-              <div className="label">Membership Validity</div>
-              <div
-                className={`value ${isStatusActive ? 'green' : ''}`}
-                id="valid"
-                style={!isStatusActive ? { color: '#a33d33' } : undefined}
-              >
-                {profile.validityDateMarathi}
+            <div className="scHeaderLine" aria-hidden="true" />
+          </div>
+          <div className="scAshokaEmblem">
+            <img
+              src="./assets/ashoka-emblem.png"
+              alt="महाराष्ट्र शासन"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = './public/assets/ashoka-emblem.png';
+              }}
+            />
+          </div>
+          <div className="scBackFeatures">
+            <div className="scBackRow">
+              <div className="scBackIcon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
+              </div>
+              <div className="scBackContent">
+                <div className="scBackTitle">चालकाची माहिती</div>
+                <div className="scBackSub">नाव, पत्ता, वाहन तपशील</div>
+              </div>
+            </div>
+
+            <div className="scBackRow">
+              <div className="scBackIcon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                </svg>
+              </div>
+              <div className="scBackContent">
+                <div className="scBackTitle">शासकीय योजना व लाभ</div>
+                <div className="scBackSub">कल्याणकारी योजना, विमा, आर्थिक मदत</div>
+              </div>
+            </div>
+
+            <div className="scBackRow">
+              <div className="scBackIcon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+              <div className="scBackContent">
+                <div className="scBackTitle">माहिती व जनजागृती व्हिडीओ</div>
+                <div className="scBackSub">रस्ते सुरक्षा, नियम, मार्गदर्शन</div>
+              </div>
+            </div>
+
+            <div className="scBackRow">
+              <div className="scBackIcon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                </svg>
+              </div>
+              <div className="scBackContent">
+                <div className="scBackTitle">आपत्कालीन संपर्क</div>
+                <div className="scBackSub">अपघात / वैद्यकीय / तांत्रिक मदत</div>
+              </div>
+              <div className="scBackRight emergency">
+                <div className="scEmerNum">112</div>
+                <div className="scEmerLabel">(सर्व सेवा)</div>
+              </div>
+            </div>
+
+            <div className="scBackRow">
+              <div className="scBackIcon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                </svg>
+              </div>
+              <div className="scBackContent">
+                <div className="scBackTitle">आपत्कालीन संपर्क (वैयक्तिक)</div>
+                <div className="scBackSub">Emergency Contact</div>
+              </div>
+              <div className="scBackRight personal">
+                <div className="scPersonalNum">98765 43210</div>
               </div>
             </div>
           </div>
 
-          <div className="row">
-            <div className="item">
-              <div className="label">Card Number</div>
-              <div className="value" id="cardNumber">{profile.cardNumber}</div>
-            </div>
-            <div className="item">
-              <div className="label">Record Status</div>
-              <div
-                className={`value ${isStatusActive ? 'green' : ''}`}
-                id="recordStatus"
-                style={!isStatusActive ? { color: '#a33d33' } : undefined}
-              >
-                {isStatusActive ? 'Valid & Active' : status}
-              </div>
-            </div>
+          <div className="scBridgeGraphic">
+            <img
+              src="./assets/card-back-bridge.png"
+              alt="Maharashtra Moves Together"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = './public/assets/card-back-bridge.png';
+              }}
+            />
           </div>
-        </div>
 
-        {/* Integrity Confirmation */}
-        <div className="integrity">
-          <div className="integrityIcon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 3 5 6v5c0 4.8 2.9 8.1 7 10 4.1-1.9 7-5.2 7-10V6l-7-3Z" />
-              <path d="m8.8 12 2.1 2.2 4.4-4.5" />
-            </svg>
+          <div className="scFooterText scBackFooter">
+            DAXY PROTOTYPE <span>|</span> केवळ संकल्पना नमुना <span>|</span> Not Government Issued
           </div>
-          <div>
-            <strong>QR verification matched</strong>
-            <p>
-              This SmartCard record is shown as active in the verification prototype. Always scan the physical card QR for field verification.
-            </p>
+        </section>
+      </div>
+
+      {/* Verification Result Banner: Preserves instant field scan feedback and search params */}
+      <div className="integrity" id="verificationResult">
+        <div className="integrityIcon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 3 5 6v5c0 4.8 2.9 8.1 7 10 4.1-1.9 7-5.2 7-10V6l-7-3Z" />
+            <path d="m8.8 12 2.1 2.2 4.4-4.5" />
+          </svg>
+        </div>
+        <div>
+          <strong>
+            <span id="verifyLabel">{isStatusActive ? 'Verified Member' : `${status} Member`}</span> ·{' '}
+            <span id="recordStatus" className={isStatusActive ? 'green' : ''} style={!isStatusActive ? { color: '#a33d33' } : undefined}>
+              {isStatusActive ? 'Valid & Active' : status}
+            </span>
+          </strong>
+          <p>
+            SmartCard ID: <b id="member">{profile.driverId}</b> · RTO: <span id="rto">{profile.rtoMarathi}</span> ·{' '}
+            <span id="verifyTime">{verifiedTime}</span>
+          </p>
+          <div style={{ display: 'none' }} aria-hidden="true">
+            <span id="membership" className={isStatusActive ? 'active' : ''}>
+              {status}
+            </span>
+            <span id="nameEn">{profile.nameEnglish}</span>
+            <span id="districtChip">{profile.rtoMarathi}</span>
+            <span id="aadhaar">{profile.aadhaarMasked}</span>
+            <span id="issueDate">{profile.issueDateMarathi}</span>
+            <span id="cardNumber">{profile.cardNumber}</span>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Video Card Container */}
       <section className="card videoCard" id="videoSection" aria-label="Official video content">
