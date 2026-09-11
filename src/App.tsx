@@ -57,12 +57,11 @@ export const App: React.FC = () => {
     return params.get('status') || 'Active';
   });
 
-  const [cardMode, setCardMode] = useState<'both' | 'front' | 'back'>(() => {
-    if (typeof window === 'undefined') return 'both';
+  const [cardSide, setCardSide] = useState<'front' | 'back'>(() => {
+    if (typeof window === 'undefined') return 'front';
     const side = new URLSearchParams(window.location.search).get('side');
-    if (side === 'front') return 'front';
     if (side === 'back') return 'back';
-    return 'both';
+    return 'front';
   });
 
   const [verifiedTime] = useState<string>(() => {
@@ -160,29 +159,15 @@ export const App: React.FC = () => {
         />
       </header>
 
-      {/* Card View Mode Selector (Both Sides / Front / Back) */}
+      {/* Card View Mode Selector (Front / Back) */}
       <div className="cardToggleWrap" role="tablist" aria-label="स्मार्ट कार्ड बाजू निवडा">
         <button
           type="button"
-          className={`cardTab ${cardMode === 'both' ? 'active' : ''}`}
-          id="tabBoth"
-          role="tab"
-          aria-selected={cardMode === 'both'}
-          onClick={() => setCardMode('both')}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
-            <rect x="2" y="5" width="9" height="14" rx="1.5" />
-            <rect x="13" y="5" width="9" height="14" rx="1.5" />
-          </svg>
-          दोन्ही बाजू (Both Sides)
-        </button>
-        <button
-          type="button"
-          className={`cardTab ${cardMode === 'front' ? 'active' : ''}`}
+          className={`cardTab ${cardSide === 'front' ? 'active' : ''}`}
           id="tabFront"
           role="tab"
-          aria-selected={cardMode === 'front'}
-          onClick={() => setCardMode('front')}
+          aria-selected={cardSide === 'front'}
+          onClick={() => setCardSide('front')}
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
             <rect x="3" y="4" width="18" height="16" rx="2" />
@@ -192,11 +177,11 @@ export const App: React.FC = () => {
         </button>
         <button
           type="button"
-          className={`cardTab ${cardMode === 'back' ? 'active' : ''}`}
+          className={`cardTab ${cardSide === 'back' ? 'active' : ''}`}
           id="tabBack"
           role="tab"
-          aria-selected={cardMode === 'back'}
-          onClick={() => setCardMode('back')}
+          aria-selected={cardSide === 'back'}
+          onClick={() => setCardSide('back')}
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
             <rect x="3" y="4" width="18" height="16" rx="2" />
@@ -206,15 +191,15 @@ export const App: React.FC = () => {
         </button>
       </div>
 
-      {/* Rebuilt Digital ID Card Showcase: Front and Back Side by Side (1:1 Reference Match) */}
+      {/* Rebuilt Digital ID Card Showcase: 3D Flip Container */}
       <div className="cardShowcaseWrap" id="cardShowcase">
-        {/* FRONT CARD */}
-        <section
-          className="card smartCardCanvas"
-          id="frontCard"
-          style={{ display: cardMode === 'back' ? 'none' : 'block' }}
-          aria-label="व्यावसायिक प्रवासी वाहन चालक स्मार्ट कार्ड (समोरची बाजू)"
-        >
+        <div className={`cardFlipContainer ${cardSide === 'back' ? 'isFlipped' : ''}`} id="cardFlipContainer">
+          {/* FRONT CARD */}
+          <section
+            className="card smartCardCanvas"
+            id="frontCard"
+            aria-label="व्यावसायिक प्रवासी वाहन चालक स्मार्ट कार्ड (समोरची बाजू)"
+          >
           <div className="scDigheCorner">
             <img
               src="./assets/card-dighe-corner.png"
@@ -324,7 +309,6 @@ export const App: React.FC = () => {
         <section
           className="card smartCardCanvas"
           id="backCard"
-          style={{ display: cardMode === 'front' ? 'none' : 'block' }}
           aria-label="व्यावसायिक प्रवासी वाहन चालक स्मार्ट कार्ड (मागील बाजू)"
         >
           <div className="scBackHeaderBoard">
@@ -426,6 +410,7 @@ export const App: React.FC = () => {
             DAXY PROTOTYPE <span>|</span> केवळ संकल्पना नमुना <span>|</span> Not Government Issued
           </div>
         </section>
+        </div>
       </div>
 
       {/* Verification Result Banner: Preserves instant field scan feedback and search params */}

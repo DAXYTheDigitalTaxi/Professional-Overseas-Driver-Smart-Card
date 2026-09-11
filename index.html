@@ -87,33 +87,59 @@ button{font:inherit}
 }
 .cardTab svg { width: 13px; height: 13px; }
 
-/* SIDE-BY-SIDE PRESENTATION SHOWCASE */
+/* 3D CARD FLIP SHOWCASE */
 .cardShowcaseWrap {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  align-items: flex-start;
-  gap: 20px;
+  align-items: center;
+  perspective: 1400px;
+  -webkit-perspective: 1400px;
   width: 100%;
   margin: 0 auto 16px auto;
+  padding: 0 4px;
+}
+
+.cardFlipContainer {
+  position: relative;
+  width: 100%;
+  max-width: 439px;
+  aspect-ratio: 439 / 626;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.cardFlipContainer.isFlipped {
+  transform: rotateY(-180deg);
 }
 
 /* SMART CARD CONTAINER: Exact 439 x 626 Aspect Ratio with Fluid Container Query Scaling */
 .smartCardCanvas {
   container-type: inline-size;
   width: 100%;
-  max-width: 439px;
-  aspect-ratio: 439 / 626;
+  height: 100%;
+  position: absolute;
+  inset: 0;
   background: #ffffff;
   border: 1px solid #d9dce1;
   border-radius: clamp(12px, 4.1cqw, 18px);
   box-shadow: 0 10px 28px rgba(17, 24, 39, 0.08), 0 2px 6px rgba(17, 24, 39, 0.03);
-  position: relative;
   overflow: hidden;
-  flex: 0 1 min(100%, 439px);
-  min-width: 0;
   box-sizing: border-box;
   user-select: none;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+#frontCard {
+  transform: rotateY(0deg);
+  z-index: 2;
+}
+
+#backCard {
+  transform: rotateY(180deg);
+  z-index: 1;
 }
 
 /* 1. TOP-LEFT ANAND DIGHE CORNER */
@@ -586,26 +612,23 @@ button{font:inherit}
     <img class="dighe" src="./assets/anand-dighe-poster.jpg" alt="Dharmaveer Anand Dighe Saheb" onerror="this.src='https://images.loksattaimg.com/2023/01/Dharmaveer-Anand-Dighe-Birth-Anniversary-13.jpg'" referrerpolicy="no-referrer">
   </header>
 
-  <!-- Card View Mode Selector (Both Sides / Front / Back) -->
+  <!-- Card View Mode Selector (Front / Back) -->
   <div class="cardToggleWrap" role="tablist" aria-label="स्मार्ट कार्ड बाजू निवडा">
-    <button type="button" class="cardTab active" id="tabBoth" role="tab" aria-selected="true" onclick="switchCardMode('both')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="9" height="14" rx="1.5"/><rect x="13" y="5" width="9" height="14" rx="1.5"/></svg>
-      दोन्ही बाजू (Both Sides)
-    </button>
-    <button type="button" class="cardTab" id="tabFront" role="tab" aria-selected="false" onclick="switchCardMode('front')">
+    <button type="button" class="cardTab active" id="tabFront" role="tab" aria-selected="true" onclick="switchCardSide('front')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h4M7 16h6"/></svg>
       समोरची बाजू (Front)
     </button>
-    <button type="button" class="cardTab" id="tabBack" role="tab" aria-selected="false" onclick="switchCardMode('back')">
+    <button type="button" class="cardTab" id="tabBack" role="tab" aria-selected="false" onclick="switchCardSide('back')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m9 12 2 2 4-4"/></svg>
       मागील बाजू (Back)
     </button>
   </div>
 
-  <!-- Rebuilt Digital ID Card Showcase: Front and Back Side by Side (1:1 Reference Match) -->
+  <!-- Rebuilt Digital ID Card Showcase: 3D Flip Container -->
   <div class="cardShowcaseWrap" id="cardShowcase">
-    <!-- FRONT CARD -->
-    <section class="card smartCardCanvas" id="frontCard" aria-label="व्यावसायिक प्रवासी वाहन चालक स्मार्ट कार्ड (समोरची बाजू)">
+    <div class="cardFlipContainer" id="cardFlipContainer">
+      <!-- FRONT CARD -->
+      <section class="card smartCardCanvas" id="frontCard" aria-label="व्यावसायिक प्रवासी वाहन चालक स्मार्ट कार्ड (समोरची बाजू)">
       <div class="scDigheCorner">
         <img src="./assets/card-dighe-corner.png" alt="धर्मवीर आनंद दिघे साहेब" onerror="this.src='./public/assets/card-dighe-corner.png'">
       </div>
@@ -736,6 +759,7 @@ button{font:inherit}
         DAXY PROTOTYPE <span>|</span> केवळ संकल्पना नमुना <span>|</span> Not Government Issued
       </div>
     </section>
+    </div>
   </div>
 
   <!-- Verification Result Banner: Preserves instant field scan feedback and search params -->
@@ -857,42 +881,30 @@ if ('IntersectionObserver' in window && video) {
   videoObserver.observe(videoSection);
 }
 
-function switchCardMode(mode) {
-  const front = document.getElementById('frontCard');
-  const back = document.getElementById('backCard');
-  const tabBoth = document.getElementById('tabBoth');
+function switchCardSide(side) {
+  const flipper = document.getElementById('cardFlipContainer');
   const tabF = document.getElementById('tabFront');
   const tabB = document.getElementById('tabBack');
-  if (!front || !back) return;
+  if (!flipper) return;
 
-  [tabBoth, tabF, tabB].forEach(t => {
-    if (t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); }
-  });
-
-  if (mode === 'front') {
-    front.style.display = 'block';
-    back.style.display = 'none';
-    if (tabF) { tabF.classList.add('active'); tabF.setAttribute('aria-selected', 'true'); }
-  } else if (mode === 'back') {
-    front.style.display = 'none';
-    back.style.display = 'block';
+  if (side === 'back') {
+    flipper.classList.add('isFlipped');
     if (tabB) { tabB.classList.add('active'); tabB.setAttribute('aria-selected', 'true'); }
+    if (tabF) { tabF.classList.remove('active'); tabF.setAttribute('aria-selected', 'false'); }
   } else {
-    front.style.display = 'block';
-    back.style.display = 'block';
-    if (tabBoth) { tabBoth.classList.add('active'); tabBoth.setAttribute('aria-selected', 'true'); }
+    flipper.classList.remove('isFlipped');
+    if (tabF) { tabF.classList.add('active'); tabF.setAttribute('aria-selected', 'true'); }
+    if (tabB) { tabB.classList.remove('active'); tabB.setAttribute('aria-selected', 'false'); }
   }
 }
-function switchCardSide(side) {
-  switchCardMode(side);
+function switchCardMode(mode) {
+  switchCardSide(mode);
 }
 const sideParam = qs.get('side');
-if (sideParam === 'front') {
-  switchCardMode('front');
-} else if (sideParam === 'back') {
-  switchCardMode('back');
+if (sideParam === 'back') {
+  switchCardSide('back');
 } else {
-  switchCardMode('both');
+  switchCardSide('front');
 }
 </script>
 </body>
