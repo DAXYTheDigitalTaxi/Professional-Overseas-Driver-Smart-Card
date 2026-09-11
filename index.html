@@ -265,18 +265,37 @@ document.getElementById('verifyTime').textContent='Verified · '+now.toLocaleTim
 const video=document.getElementById('infoVideo');
 const poster=document.getElementById('videoPoster');
 const playBtn=document.getElementById('playVideo');
-function startVideo(){
+function startVideo(unmute){
   poster.classList.add('hide');
-  video.muted=false;
+  if(unmute) video.muted=false;
   video.play().catch(()=>{
     video.muted=true;
     video.play().catch(()=>{});
   });
 }
-playBtn.addEventListener('click',startVideo);
-poster.addEventListener('click',startVideo);
+playBtn.addEventListener('click',()=>startVideo(true));
+poster.addEventListener('click',()=>startVideo(true));
 video.addEventListener('play',()=>poster.classList.add('hide'));
 video.addEventListener('ended',()=>poster.classList.remove('hide'));
+
+if ('IntersectionObserver' in window && video) {
+  const videoSection = document.getElementById('videoSection') || video;
+  const videoObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        video.muted = true;
+        video.play().then(() => {
+          poster.classList.add('hide');
+        }).catch(() => {});
+      } else {
+        if (!video.paused) {
+          video.pause();
+        }
+      }
+    });
+  }, { threshold: 0.35 });
+  videoObserver.observe(videoSection);
+}
 
 function switchCardMode(mode) {
   const front = document.getElementById('frontCard');
