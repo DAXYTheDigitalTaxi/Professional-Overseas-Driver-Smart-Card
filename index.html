@@ -1,23 +1,254 @@
 <!doctype html>
-<html lang="mr">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-    <meta name="theme-color" content="#0c1e36" />
-    <meta name="description" content="महाराष्ट्र शासन - धर्मवीर आनंद दिघे साहेब महाराष्ट्र प्रवासी वाहन चालक कल्याण मंडळ | QR आधारित डिजिटल वाहन व चालक पडताळणी प्रणाली" />
-    <title>महाराष्ट्र शासन | व्यावसायिक वाहन चालक डिजिटल ओळखपत्र (Digital Verification)</title>
-    
-    <!-- Google Fonts Preconnect & Load -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    
-    <!-- Compiled Production Assets for Direct Static & GitHub Pages Hosting -->
-    <script type="module" crossorigin src="./assets/index-B6J8U1lu.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-DXgw2-wn.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F5F6F3">
+<meta name="color-scheme" content="light">
+<title>SmartCard Member Verification — Daxy Prototype</title>
+<style>
+:root{
+  --page:#f5f6f3;
+  --surface:#ffffff;
+  --ink:#111821;
+  --ink-2:#2b3642;
+  --muted:#717b84;
+  --muted-2:#949ca3;
+  --line:#e6e9e4;
+  --line-strong:#d9ddd7;
+  --navy:#102a43;
+  --green:#13784b;
+  --green-bg:#edf8f2;
+  --green-line:#cae8d7;
+  --amber:#a96308;
+  --amber-bg:#fff6e8;
+  --r-lg:20px;
+  --r-md:12px;
+  --shadow:0 10px 28px rgba(18,34,49,.055);
+}
+*{box-sizing:border-box}
+html{background:var(--page);scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--ink);
+  background:var(--page);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Noto Sans Devanagari",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+button{font:inherit}
+.page{width:min(100%,520px);margin:0 auto;padding:0 12px calc(28px + env(safe-area-inset-bottom))}
+.tricolor{height:3px;margin:0 -12px 12px;background:linear-gradient(90deg,#e88b22 0 33.33%,#fff 33.33% 66.66%,#16834f 66.66%);box-shadow:0 1px 0 rgba(0,0,0,.03)}
+.header{display:grid;grid-template-columns:46px 1fr 46px;align-items:center;gap:10px;padding:4px 2px 14px}
+.emblem{width:46px;height:46px;border-radius:50%;border:1px solid var(--line-strong);background:#fff;display:grid;place-items:center;overflow:hidden}
+.emblem img{width:100%;height:100%;object-fit:contain}
+.board{text-align:center;min-width:0}
+.board .mr{font-size:12px;line-height:1.22;font-weight:800;color:var(--navy);letter-spacing:-.15px}
+.board .en{margin-top:4px;font-size:8px;line-height:1.2;color:var(--muted);letter-spacing:.36px;text-transform:uppercase}
+.dighe{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 0 0 1px var(--line-strong);background:#eaece8}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow)}
+.verify{padding:16px}
+.verifyTop{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.verifiedBadge{display:inline-flex;align-items:center;gap:8px;color:var(--green);font-size:12px;font-weight:850;letter-spacing:.15px;text-transform:uppercase}
+.check{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--green);box-shadow:0 0 0 4px var(--green-bg)}
+.check svg{width:13px;height:13px}
+.liveRecord{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.identity{display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;align-items:flex-start;padding:16px 0 14px}
+.photo{width:92px;aspect-ratio:3/4;border-radius:var(--r-md);overflow:hidden;background:linear-gradient(145deg,#e9edef,#cbd3d8);border:1px solid var(--line-strong);position:relative;flex-shrink:0}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo svg{width:100%;height:100%;display:none}
+.photoMark{position:absolute;right:5px;bottom:5px;background:rgba(17,24,33,.72);color:#fff;font-size:7px;line-height:1;padding:4px 5px;border-radius:6px;letter-spacing:.45px;text-transform:uppercase;backdrop-filter:blur(8px)}
+.name{font-size:23px;line-height:1.05;font-weight:820;letter-spacing:-.58px;color:#0f1720}
+.name-en{font-size:13.5px;color:var(--muted);font-weight:600;margin-top:2px}
+.idline{margin-top:7px;color:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+.idline b{color:var(--ink-2);font-weight:750}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+.chip{display:inline-flex;align-items:center;min-height:25px;padding:0 8px;border:1px solid var(--line);border-radius:999px;background:#fafbf9;color:#48545f;font-size:9.5px;font-weight:700}
+.chip.active{background:var(--green-bg);border-color:var(--green-line);color:var(--green)}
+.details{border-top:1px solid var(--line);padding-top:2px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0;padding-bottom:4px}
+.item{min-width:0}
+.label{font-size:8.5px;line-height:1;text-transform:uppercase;letter-spacing:.68px;color:var(--muted-2);font-weight:800;margin-bottom:6px}
+.value{font-size:12.5px;line-height:1.25;color:var(--ink-2);font-weight:730;word-break:break-word}
+.value.green{color:var(--green)}
+.integrity{display:flex;gap:10px;align-items:flex-start;margin-top:13px;padding:11px 12px;border:1px solid var(--green-line);border-radius:var(--r-md);background:var(--green-bg)}
+.integrityIcon{width:24px;height:24px;display:grid;place-items:center;flex:0 0 auto;color:var(--green)}
+.integrityIcon svg{width:18px;height:18px}
+.integrity strong{display:block;font-size:10.5px;color:#125c3d;margin-bottom:2px}
+.integrity p{margin:0;font-size:9.5px;line-height:1.35;color:#527060}
+.videoCard{margin-top:10px;overflow:hidden}
+.videoHead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px 15px 12px}
+.videoHead h2{font-size:13px;line-height:1.2;margin:0;color:var(--navy);letter-spacing:-.12px}
+.videoHead p{font-size:9.5px;line-height:1.35;margin:4px 0 0;color:var(--muted)}
+.officialTag{flex:0 0 auto;padding:5px 7px;border-radius:999px;border:1px solid #eadcc4;background:var(--amber-bg);color:var(--amber);font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.35px}
+.videoStage{position:relative;aspect-ratio:16/9;background:#08131f;overflow:hidden}
+.videoStage video{width:100%;height:100%;display:block;object-fit:cover;background:#08131f}
+.poster{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;background:linear-gradient(180deg,rgba(7,18,29,.05) 15%,rgba(7,18,29,.86) 100%);color:#fff;transition:opacity .2s ease;cursor:pointer}
+.poster.hide{opacity:0;pointer-events:none}
+.posterEyebrow{font-size:8.5px;text-transform:uppercase;letter-spacing:.8px;color:#c9d5df;font-weight:750;margin-bottom:5px}
+.posterTitle{font-size:17px;font-weight:780;letter-spacing:-.25px;max-width:72%;line-height:1.08}
+.play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border:0;border-radius:50%;background:rgba(255,255,255,.95);color:#0b2239;display:grid;place-items:center;box-shadow:0 8px 30px rgba(0,0,0,.25);cursor:pointer}
+.play svg{width:20px;height:20px;margin-left:2px}
+.videoFoot{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 15px 13px}
+.videoFoot strong{display:block;font-size:10.5px;color:var(--ink-2)}
+.videoFoot span{display:block;margin-top:2px;font-size:8.8px;line-height:1.3;color:var(--muted)}
+.dynamic{font-size:8.5px;color:var(--navy);font-weight:800;white-space:nowrap}
+.notice{display:flex;align-items:flex-start;gap:8px;padding:12px 3px 0;color:#707980;font-size:8.8px;line-height:1.4}
+.notice svg{width:15px;height:15px;flex:0 0 auto;margin-top:1px}
+.footer{text-align:center;padding:20px 8px 0;color:#91989d;font-size:8.5px;line-height:1.55}
+.footer b{color:#69737b;font-weight:750}
+.prototype{display:inline-block;margin-top:7px;padding:4px 7px;border:1px dashed #c7cbc5;border-radius:6px;text-transform:uppercase;letter-spacing:.9px;font-size:7.5px;color:#8b928d}
+@media(min-width:460px){.page{padding-left:16px;padding-right:16px}.tricolor{margin-left:-16px;margin-right:-16px}.verify{padding:18px}.videoHead,.videoFoot{padding-left:17px;padding-right:17px}}
+@media(max-width:350px){.board .en{display:none}.name{font-size:20px}.identity{grid-template-columns:82px 1fr}.photo{width:82px}.row{gap:10px}.verifiedBadge{font-size:11px}}
+@media(prefers-reduced-motion:no-preference){.card{animation:rise .35s ease both}.videoCard{animation-delay:.05s}@keyframes rise{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}}
+@media print{body{background:#fff}.page{max-width:520px}.card{box-shadow:none}.videoCard,.notice{display:none}}
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="tricolor" aria-hidden="true"></div>
+
+  <header class="header">
+    <div class="emblem" aria-label="MMVD Logo">
+      <img src="./assets/mmvd-logo.png" alt="MMVD Logo" onerror="this.src='./public/assets/mmvd-logo.png'">
+    </div>
+    <div class="board">
+      <div class="mr">धर्मवीर आनंद दिघे साहेब महाराष्ट्र<br>प्रवासी वाहन चालक कल्याणकारी मंडळ</div>
+      <div class="en">Maharashtra Passenger Vehicle Drivers Welfare Board</div>
+    </div>
+    <img class="dighe" src="./assets/anand-dighe-poster.jpg" alt="Dharmaveer Anand Dighe Saheb" onerror="this.src='https://images.loksattaimg.com/2023/01/Dharmaveer-Anand-Dighe-Birth-Anniversary-13.jpg'" referrerpolicy="no-referrer">
+  </header>
+
+  <section class="card verify" aria-label="SmartCard member verification">
+    <div class="verifyTop">
+      <div class="verifiedBadge">
+        <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 9.2 17 19 7"/></svg></span>
+        <span id="verifyLabel">Verified Member</span>
+      </div>
+      <div class="liveRecord" id="verifyTime">Verified now</div>
+    </div>
+
+    <div class="identity">
+      <div class="photo" aria-label="Member photograph">
+        <img id="memberPhoto" src="./assets/driver-photo.jpg" alt="Member photograph" onerror="this.src='./public/assets/driver-photo.jpg'">
+        <span class="photoMark">Photo ID</span>
+      </div>
+      <div>
+        <div class="name" id="name">संजय तुकाराम पाटील</div>
+        <div class="name-en" id="nameEn">Sanjay Tukaram Patil</div>
+        <div class="idline">SmartCard ID&nbsp; <b id="member">MHDPWB001234</b></div>
+        <div class="chips">
+          <span class="chip active" id="membership">Active</span>
+          <span class="chip" id="vehicleType">ऑटो-रिक्षा / टॅक्सी</span>
+          <span class="chip" id="districtChip">पुणे (MH12)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="details">
+      <div class="row">
+        <div class="item"><div class="label">RTO</div><div class="value" id="rto">MH-12 · Pune</div></div>
+        <div class="item"><div class="label">Driver / Badge No.</div><div class="value" id="badge">MH12 20180001234</div></div>
+      </div>
+      <div class="row">
+        <div class="item"><div class="label">Aadhaar Card No.</div><div class="value" id="aadhaar">**** **** 6789</div></div>
+        <div class="item"><div class="label">Date of Birth</div><div class="value" id="dob">15 Jun 1990</div></div>
+      </div>
+      <div class="row">
+        <div class="item"><div class="label">Card Issue Date</div><div class="value" id="issueDate">01 Jun 2024</div></div>
+        <div class="item"><div class="label">Membership Validity</div><div class="value green" id="valid">31 Dec 2028</div></div>
+      </div>
+      <div class="row">
+        <div class="item"><div class="label">Card Number</div><div class="value" id="cardNumber">MHDPWB25000123</div></div>
+        <div class="item"><div class="label">Record Status</div><div class="value green" id="recordStatus">Valid & Active</div></div>
+      </div>
+    </div>
+
+    <div class="integrity">
+      <div class="integrityIcon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 5 6v5c0 4.8 2.9 8.1 7 10 4.1-1.9 7-5.2 7-10V6l-7-3Z"/><path d="m8.8 12 2.1 2.2 4.4-4.5"/></svg></div>
+      <div><strong>QR verification matched</strong><p>This SmartCard record is shown as active in the verification prototype. Always scan the physical card QR for field verification.</p></div>
+    </div>
+  </section>
+
+  <section class="card videoCard" id="videoSection" aria-label="Official video content">
+    <div class="videoHead">
+      <div><h2>Member Information & Official Updates</h2><p>One QR can also deliver approved welfare, safety and public-information content.</p></div>
+      <span class="officialTag">Official Content</span>
+    </div>
+    <div class="videoStage">
+      <video id="infoVideo" playsinline preload="metadata" controls controlslist="nodownload noplaybackrate">
+        <source src="./assets/pratap-sarnaik.mp4" type="video/mp4">
+        Your browser does not support video playback.
+      </video>
+      <div class="poster" id="videoPoster">
+        <div class="posterEyebrow">Welfare Board · Member Update</div>
+        <div class="posterTitle">Safety. Welfare. Trust.</div>
+        <button class="play" id="playVideo" type="button" aria-label="Play official video">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.7v12.6L18.8 12 8 5.7Z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="videoFoot">
+      <div><strong>Dynamic content, without reprinting the card</strong><span>Campaigns and welfare messages can be updated centrally.</span></div>
+      <div class="dynamic">QR → LIVE CONTENT</div>
+    </div>
+  </section>
+
+  <div class="notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.1"/></svg><span>A screenshot of this page is not proof of validity. Field officers should verify by scanning the QR printed on the physical SmartCard.</span></div>
+
+  <footer class="footer"><b>SmartCard QR Verification</b><br>Designed for fast field verification and member communication.<br><span class="prototype">Daxy Prototype · Not an official government record</span></footer>
+</main>
+<script>
+const qs=new URLSearchParams(location.search);
+const fields={name:'name',member:'member',rto:'rto',badge:'badge',valid:'valid',district:'districtChip',since:'issueDate',type:'vehicleType',aadhaar:'aadhaar',dob:'dob',cardNumber:'cardNumber'};
+for(const [key,id] of Object.entries(fields)){
+  const val=qs.get(key);
+  if(val&&document.getElementById(id))document.getElementById(id).textContent=val;
+}
+const status=(qs.get('status')||'Active').trim();
+const membership=document.getElementById('membership');
+const verifyLabel=document.getElementById('verifyLabel');
+const recordStatus=document.getElementById('recordStatus');
+membership.textContent=status;
+if(!/^active$/i.test(status)){
+  membership.classList.remove('active');
+  membership.style.background='#fff1f0';membership.style.borderColor='#f0cbc7';membership.style.color='#a33d33';
+  verifyLabel.textContent=status+' Member';
+  recordStatus.textContent=status;
+  recordStatus.classList.remove('green');
+  recordStatus.style.color='#a33d33';
+}
+const photo=qs.get('photo');
+if(photo){
+  const img=document.getElementById('memberPhoto');
+  img.src=photo;
+}
+const vid=qs.get('video');
+if(vid){
+  const video=document.getElementById('infoVideo');
+  const src=video.querySelector('source');
+  src.src=vid;
+  video.load();
+}
+const now=new Date();
+document.getElementById('verifyTime').textContent='Verified · '+now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+const video=document.getElementById('infoVideo');
+const poster=document.getElementById('videoPoster');
+const playBtn=document.getElementById('playVideo');
+function startVideo(){
+  poster.classList.add('hide');
+  video.muted=false;
+  video.play().catch(()=>{
+    video.muted=true;
+    video.play().catch(()=>{});
+  });
+}
+playBtn.addEventListener('click',startVideo);
+poster.addEventListener('click',startVideo);
+video.addEventListener('play',()=>poster.classList.add('hide'));
+video.addEventListener('ended',()=>poster.classList.remove('hide'));
+</script>
+</body>
 </html>

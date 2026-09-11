@@ -30,6 +30,8 @@ export interface DriverProfile {
   sloganMarathi: string;
   driverPhotoUrl: string;
   anandDighePhotoUrl: string;
+  mmvdLogoUrl: string;
+  officialVideoUrl: string;
   signatureText: string;
 }
 
@@ -64,7 +66,9 @@ export const DEMO_DRIVER_DATA: DriverProfile = {
   quoteAuthor: 'धर्मवीर आनंद दिघे साहेब',
   sloganMarathi: 'माणूस रस्ते जोडतो, महाराष्ट्र पुढे नेतो',
   driverPhotoUrl: './assets/driver-photo.jpg',
-  anandDighePhotoUrl: './assets/anand-dighe.png',
+  anandDighePhotoUrl: './assets/anand-dighe-poster.jpg',
+  mmvdLogoUrl: './assets/mmvd-logo.png',
+  officialVideoUrl: './assets/pratap-sarnaik.mp4',
   signatureText: 'S. Patil',
 };
 
